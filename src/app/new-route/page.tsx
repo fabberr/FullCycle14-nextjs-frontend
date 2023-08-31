@@ -1,9 +1,18 @@
 'use client';
 
 import type { FindPlaceFromTextResponseData } from "@googlemaps/google-maps-services-js";
-import { FormEvent } from "react";
+import { FormEvent, useRef } from "react";
+import useMap from "../hooks/useMap";
 
 export function NewRoutePage() {
+
+    /********** Hooks **********/
+    
+    const mapContainerRef = useRef<HTMLDivElement>(null);
+    const map = useMap(mapContainerRef);
+
+    /********** Event Handlers **********/
+    
     const handleFindPlacesSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
@@ -15,7 +24,10 @@ export function NewRoutePage() {
         const origin = (document.getElementById('txtOrigin') as HTMLInputElement).value;
         const destination = (document.getElementById('txtDestination') as HTMLInputElement).value;
 
-        const [originPlaceResponseData, destinationPlaceResponseData]: FindPlaceFromTextResponseData[] = await Promise.all([
+        const [
+            originPlaceResponseData,
+            destinationPlaceResponseData,
+        ]: FindPlaceFromTextResponseData[] = await Promise.all([
             fetch(`${findPlaceUrl}?text=${origin}`).then((res) => res.json()),
             fetch(`${findPlaceUrl}?text=${destination}`).then((res) => res.json())
         ]);
@@ -48,17 +60,21 @@ export function NewRoutePage() {
     };
 
     return (
-        <div>
-            <h1>Nova rota</h1>
-            <form id="findPlaces" style={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleFindPlacesSubmit}>
-                <div>
-                    <input id="txtOrigin" type="text" placeholder="Origem" name="Origin" title="Origem" />
-                </div>
-                <div>
-                    <input id="txtDestination" type="text" placeholder="Destino" name="Destination" title="Destino" />
-                </div>
-                <button type="submit">Pesquisar</button>
-            </form>
+        <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%' }}>
+            <div>
+                <h1>Nova rota</h1>
+                <form id="findPlaces" style={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleFindPlacesSubmit}>
+                    <div>
+                        <input id="txtOrigin" type="text" placeholder="Origem" name="Origin" title="Origem" />
+                    </div>
+                    <div>
+                        <input id="txtDestination" type="text" placeholder="Destino" name="Destination" title="Destino" />
+                    </div>
+                    <button type="submit">Pesquisar</button>
+                </form>
+            </div>
+            <div id="map" style={{ height: '100%', width: '100%' }} ref={mapContainerRef}>
+            </div>
         </div>
     );
 };
