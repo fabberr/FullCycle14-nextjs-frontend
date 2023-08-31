@@ -1,5 +1,5 @@
-## FullCycle14-nestjs-backend
-Aplicação back-end escrita para o evento [Imersão Full Stack && Full Cycle 14](https://archive.is/Xu6mh).
+## FullCycle14-nextjs-frontend
+Aplicação front-end escrita para o evento [Imersão Full Stack && Full Cycle 14](https://archive.is/Xu6mh).
 
 #### Tecnologias/Linguagens utilizadas:
 - [Docker](https://www.docker.com)
