@@ -26,7 +26,7 @@ export function NewRoutePage() {
      * Finds the origin and destination places and calculates a route between 
      * them using Google Maps API, then renders a map with the route drawn onto it.
     */
-    async function findPlacesAndRenderRouteToMap() {
+    const findPlacesAndRenderRouteToMap = async () => {
         const baseUrl = 'http://localhost:3000';
 
         //==========================================================================================
@@ -96,7 +96,7 @@ export function NewRoutePage() {
     /**
      * Persists the new route onto the database.
     */
-    async function createRoute() {
+    const createRoute = async () => {
         const baseUrl = 'http://localhost:3000';
 
         const response = await fetch(`${baseUrl}/routes`, {
@@ -114,14 +114,12 @@ export function NewRoutePage() {
 
     /********** Event Handlers **********/
     
-    function handleFindRoutesFormSubmit(event: FormEvent){
+    const handleFindRoutesFormSubmit = (event: FormEvent) => {
         event.preventDefault();
         findPlacesAndRenderRouteToMap();
     };
 
-    function handleCreateRouteClick() {
-        createRoute();
-    }
+    const  handleCreateRouteClick = () => createRoute();
 
     /********** Page **********/
     return (
