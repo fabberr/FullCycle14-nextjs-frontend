@@ -66,12 +66,15 @@ export function NewRoutePage() {
         }).map(([key, value]) => `${key}=${value}`).join('&');
  
         const directionsData: DirectionsResponseData & { request: any } = 
-            await fetch(`${getDirectionsUrl}?${queryParams}`).then((res) => res.json());
-        const firstLeg = directionsData.routes.at(0)?.legs.at(0);
-        const lastLeg = directionsData.routes.at(0)?.legs.at(-1);
+            await fetch(`${getDirectionsUrl}?${queryParams}`)
+            .then((res) => res.json());
         setDirections(directionsData);
 
-        setStartAddress(firstLeg?.start_address); setEndAddress(lastLeg?.end_address);
+        const firstLeg = directionsData.routes.at(0)?.legs.at(0);
+        const lastLeg = directionsData.routes.at(0)?.legs.at(-1);
+
+        setStartAddress(firstLeg?.start_address);
+        setEndAddress(lastLeg?.end_address);
         
         //==========================================================================================
         
