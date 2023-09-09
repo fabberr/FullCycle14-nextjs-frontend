@@ -6,7 +6,7 @@ export interface ErrorType {
 };
 
 interface IRestClient<TResponseData> {
-    create(body: {}): Promise<TResponseData | ErrorType>;
+    create(body: {}): Promise<TResponseData | ErrorType>; // @todo: swap `|` with `&` to coalesce the two types together for easier error checking on caller
     find(query?: string): Promise<TResponseData | ErrorType>;
     get(id: string): Promise<TResponseData | ErrorType>;
     update(id: string): Promise<TResponseData | ErrorType>;
