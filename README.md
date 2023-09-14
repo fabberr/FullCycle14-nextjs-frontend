@@ -12,8 +12,8 @@ Aplicação front-end escrita para o evento [Imersão Full Stack && Full Cycle 1
 
 ```bash
 # Criar o diretório
-$ mkdir -p /repos/fullcycle-14
-$ cd /repos/fullcycle-14
+$ mkdir -p ~/repos/fullcycle-14
+$ cd ~/repos/fullcycle-14
 
 # Clonar o repositório para o diretório local
 $ git clone https://github.com/fabberr/FullCycle14-nextjs-frontend nextjs-app
