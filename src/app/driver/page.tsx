@@ -6,6 +6,7 @@ import useSwr from "swr";
 import * as http from "../utils/http";
 import * as models from "../utils/models";
 import * as internalApi from "../utils/internal-api";
+import type { DirectionsStep, LatLngLiteral } from "@googlemaps/google-maps-services-js";
 
 export function DriverPage() {
 
@@ -47,7 +48,7 @@ export function DriverPage() {
                 },
             });
         })();
-    }, [currentRoute]);
+    }, [currentRoute, map]);
     
     /********** Functions **********/
 
@@ -75,23 +76,50 @@ export function DriverPage() {
      * Simulates a driver travelling down the current route by updating the car 
      * marker's position on the map every few seconds.
      * 
-     * @param sleepSeconds Number of seconds between each update. Optional, 2.5 
-     *                     seconds by default.
+     * The amount of time waited between each update is based on the typical 
+     * duration for a given step of the journey as found by Google's API, 
+     * scaled down by a given time scale factor.
+     * 
+     * @param timeScale Time scale factor between updates. Higher numbers will 
+     *                  shorten the time between updates based on the typical 
+     *                  duration between two steps returned by Google's API, 
+     *                  if any. If no duration data is found, the default value 
+     *                  of 10 minutes is used.
+     * 
+     *                  Optional, default scale is 100x. If a negative value is 
+     *                  passed, its absolute value is taken as the scale.
     */
-    const simulateTravelOnCurrentRoute = async (sleepSeconds: number = 2.5) => {
+    const simulateTravelOnCurrentRoute = async (timeScale: number = 100) => {
         if (!currentRoute) {
-            console.error('Erro ao renderizar rota.', 'Nenhuma Rota selecionada.');
+            console.error('Erro ao simular viagem.', 'Nenhuma Rota selecionada.');
             return;
         }
 
-        const ms = (sleepSeconds / 2) * 1000;
+        const _fnLogStepInfo = (step: DirectionsStep, timeScale: number, durationMilliseconds: number, durationMillisecondsScaled: number) => {
+            const latlng2Str = (latlng: LatLngLiteral) => `(${latlng.lat}, ${latlng.lng})`;
+            console.log(`step: ${latlng2Str(step.start_location)} >>> ${latlng2Str(step.end_location)}`);
+            console.log(`  duration: ${durationMilliseconds / 1000}s`);
+            console.log(`  scaled (${timeScale}x): ${durationMillisecondsScaled / 1000}s\n`);
+        };
+
+        // a pior coisa que inventaram foi entrada do usuário
+        timeScale = Math.abs(timeScale);
+        if (timeScale == 0) { timeScale = 1; } /** https://www.youtube.com/watch?v=asDlYjJqzWE */
+
+        const defaultDurationMilliseconds = 10 * 60 * 1000; // Assume 10 minutes if no duration data was found.
         for (const leg of currentRoute.directions.routes.at(0)?.legs ?? []) {
             for (const step of leg?.steps ?? []) {
-                await sleep(ms);
+                // Apply time scale to current or default duration.
+                const durationMilliseconds = ((step?.duration?.value) * 1000) ?? defaultDurationMilliseconds;
+                const durationMillisecondsScaled =  durationMilliseconds / timeScale;
+
+                _fnLogStepInfo(step, timeScale, durationMilliseconds, durationMillisecondsScaled);
+
+                await sleep(durationMillisecondsScaled);
                 map?.moveCar(currentRoute.id, step.start_location);
 
-                await sleep(ms);
-                map?.moveCar(currentRoute.id, step.end_location);
+                await sleep(durationMillisecondsScaled);
+                map?.moveCar(currentRoute.id, step.end_location);                
             }
         }
     };
@@ -104,7 +132,7 @@ export function DriverPage() {
 
     function handleStartTripClick(event: MouseEvent<HTMLButtonElement>): void {
         try {
-            simulateTravelOnCurrentRoute();
+            simulateTravelOnCurrentRoute(1000);
         } catch (error) {
             console.error('Não foi possível iniciar a rota.', error);
         }
