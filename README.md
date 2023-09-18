@@ -17,7 +17,7 @@ $ cd ~/repos/fullcycle-14
 
 # Clonar o repositório para o diretório local
 $ git clone https://github.com/fabberr/FullCycle14-nextjs-frontend nextjs-app
-$ cd nestjs-app
+$ cd nextjs-app
 
 # Gerar o Container Docker da aplicação
 $ docker compose build
