@@ -97,15 +97,22 @@ export function DriverPage() {
 
         const _fnLogStepInfo = (step: googleMapsServicesJs.DirectionsStep, timeScale: number, durationMilliseconds: number, durationMillisecondsScaled: number) => {
             const latlng2Str = (latlng: googleMapsServicesJs.LatLngLiteral) => `(${latlng.lat}, ${latlng.lng})`;
-            console.log(`step: ${latlng2Str(step.start_location)} >>> ${latlng2Str(step.end_location)}`);
-            console.log(`  duration: ${durationMilliseconds / 1000}s`);
-            console.log(`  scaled (${timeScale}x): ${durationMillisecondsScaled / 1000}s\n`);
+            console.log(
+                `step: ${step.html_instructions}\n`,
+                `├── duration / (${timeScale}x): ${durationMilliseconds} ms / (${durationMillisecondsScaled} ms)\n`,
+                `├── start_location: ${latlng2Str(step.start_location)}\n`,
+                `└── end_location:   ${latlng2Str(step.end_location)}`,
+            );
         };
 
         // a pior coisa que inventaram foi entrada do usuário
         timeScale = Math.abs(timeScale);
         if (timeScale == 0) { timeScale = 1; } /** https://www.youtube.com/watch?v=asDlYjJqzWE */
 
+        // Reset car marker to first step of first leg.
+        map?.moveCar(currentRoute.id, currentRoute.directions.routes.at(0)?.legs.at(0)?.start_location!);
+
+        // Simulate travel through all steps of all legs of the current route.
         const defaultDurationMilliseconds = 10 * 60 * 1000; // Assume 10 minutes if no duration data was found.
         for (const leg of currentRoute.directions.routes.at(0)?.legs ?? []) {
             for (const step of leg?.steps ?? []) {
