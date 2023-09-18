@@ -127,10 +127,10 @@ export function DriverPage() {
 
                 _fnLogStepInfo(step, timeScale, durationMilliseconds, durationMillisecondsScaled);
 
-                await sleep(durationMillisecondsScaled);
+                await sleep(durationMillisecondsScaled / 2);
                 map?.moveCar(currentRoute.id, step.start_location);
 
-                await sleep(durationMillisecondsScaled);
+                await sleep(durationMillisecondsScaled / 2);
                 map?.moveCar(currentRoute.id, step.end_location);                
             }
         }
