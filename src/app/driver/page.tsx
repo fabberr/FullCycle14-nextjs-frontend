@@ -113,11 +113,11 @@ export function DriverPage() {
         map?.moveCar(currentRoute.id, currentRoute.directions.routes.at(0)?.legs.at(0)?.start_location!);
 
         // Simulate travel through all steps of all legs of the current route.
-        const defaultDurationMilliseconds = 10 * 60 * 1000; // Assume 10 minutes if no duration data was found.
+        const defaultDurationSeconds = 10 * 60; // Assume 10 minutes if no duration data is found.
         for (const leg of currentRoute.directions.routes.at(0)?.legs ?? []) {
             for (const step of leg?.steps ?? []) {
                 // Apply time scale to current or default duration.
-                const durationMilliseconds = ((step?.duration?.value) * 1000) ?? defaultDurationMilliseconds;
+                const durationMilliseconds = (step?.duration?.value ?? defaultDurationSeconds) * 1000;
                 const durationMillisecondsScaled =  durationMilliseconds / timeScale;
 
                 _fnLogStepInfo(step, timeScale, durationMilliseconds, durationMillisecondsScaled);
