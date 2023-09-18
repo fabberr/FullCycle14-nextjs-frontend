@@ -1,12 +1,12 @@
 'use client';
 
+import type * as googleMapsServicesJs from "@googlemaps/google-maps-services-js";
 import react, { ChangeEvent, MouseEvent } from "react";
 import useMap from "../hooks/useMap";
 import useSwr from "swr";
 import * as http from "../utils/http";
 import * as models from "../utils/models";
 import * as internalApi from "../utils/internal-api";
-import type { DirectionsStep, LatLngLiteral } from "@googlemaps/google-maps-services-js";
 
 export function DriverPage() {
 
@@ -95,8 +95,8 @@ export function DriverPage() {
             return;
         }
 
-        const _fnLogStepInfo = (step: DirectionsStep, timeScale: number, durationMilliseconds: number, durationMillisecondsScaled: number) => {
-            const latlng2Str = (latlng: LatLngLiteral) => `(${latlng.lat}, ${latlng.lng})`;
+        const _fnLogStepInfo = (step: googleMapsServicesJs.DirectionsStep, timeScale: number, durationMilliseconds: number, durationMillisecondsScaled: number) => {
+            const latlng2Str = (latlng: googleMapsServicesJs.LatLngLiteral) => `(${latlng.lat}, ${latlng.lng})`;
             console.log(`step: ${latlng2Str(step.start_location)} >>> ${latlng2Str(step.end_location)}`);
             console.log(`  duration: ${durationMilliseconds / 1000}s`);
             console.log(`  scaled (${timeScale}x): ${durationMillisecondsScaled / 1000}s\n`);
