@@ -26,7 +26,7 @@ export function DriverPage() {
     react.useEffect(() => {
         (async () => {
             if (!currentRoute) return;
-            
+
             map?.removeAllRoutes();
             
             const firstLeg = currentRoute.directions.routes.at(0)?.legs.at(0);
@@ -157,7 +157,12 @@ export function DriverPage() {
                 <h1>Minha viagem</h1>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <div>
-                        <select id="route" ref={selectedRouteRef} onChange={handleSelectedRouteChanged}>
+                        <select
+                            id="route"
+                            ref={selectedRouteRef}
+                            onChange={handleSelectedRouteChanged}
+                            style={{ maxWidth: '30vw' }}
+                        >
                             <option value="">Selecione uma Rota</option>
                             {isRoutesLoading && <option>Carregando rotas...</option>}
                             {
