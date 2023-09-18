@@ -64,9 +64,14 @@ export function DriverPage() {
             return;
         }
 
-        const findRouteResponseData = await internalApi.RoutesClient.instance.get(selectedRouteId);
-        const route = (findRouteResponseData as internalApi.ErrorType).statusCode !== 500 
-            ? findRouteResponseData as models.Route : null;
+        let route: models.Route | null;
+        try {
+            const findRouteResponseData = await internalApi.RoutesClient.instance.get(selectedRouteId);
+            route = findRouteResponseData as models.Route;
+        } catch (error) {
+            route = null;
+            console.error('Erro ao consulta rota.', error);
+        }
 
         // trigers the useEffect hook that renders `currentRoute` on the map
         updateRoute(route);
